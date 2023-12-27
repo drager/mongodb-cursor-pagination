@@ -93,6 +93,14 @@ impl Edge {
     }
 }
 
+// #[cfg(feature = "async_graphql")]
+// #[async_graphql::Object]
+// impl Edge {
+//     async fn cursor(&self) -> String {
+//         self.cursor.to_owned()
+//     }
+// }
+
 impl Deref for Edge {
     type Target = Document;
 
@@ -145,6 +153,26 @@ impl PageInfo {
     }
 }
 
+#[cfg(feature = "async_graphql")]
+#[async_graphql::Object]
+impl PageInfo {
+    async fn has_next_page(&self) -> bool {
+        self.has_next_page
+    }
+
+    async fn has_previous_page(&self) -> bool {
+        self.has_previous_page
+    }
+
+    async fn start_cursor(&self) -> Option<String> {
+        self.start_cursor.to_owned().map(|c| c.to_string())
+    }
+
+    async fn end_cursor(&self) -> Option<String> {
+        self.end_cursor.to_owned().map(|c| c.to_string())
+    }
+}
+
 /// The result of a find method with the items, edges, pagination info, and total count of objects
 #[derive(Debug, Default)]
 pub struct FindResult<T> {
@@ -156,6 +184,25 @@ pub struct FindResult<T> {
     pub total_count: u64,
     /// All items in the current Page
     pub items: Vec<T>,
+}
+
+#[async_graphql::Object]
+impl<T: Send + Sync + async_graphql::OutputType> FindResult<T> {
+    async fn page_info(&self) -> PageInfo {
+        self.page_info.to_owned()
+    }
+
+    // async fn edges(&self) -> Vec<Edge> {
+    //     self.edges.to_owned()
+    // }
+
+    async fn total_count(&self) -> u64 {
+        self.total_count
+    }
+
+    async fn items(&self) -> &Vec<T> {
+        &self.items
+    }
 }
 
 /// Cursor to an item with direction information.

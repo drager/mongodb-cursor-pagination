@@ -14,6 +14,7 @@ Provides cursor based pagination for the native MongoDB driver in Rust.
 [features]
 default = []
 graphql = ["juniper"]
+async_graphql = ["async-graphql"]
 
 [dependencies]
 base64 = "0.21.0"
@@ -22,6 +23,7 @@ log = "0.4.17"
 mongodb = "2.3.1"
 serde = "1.0"
 juniper = { version = "0.15.11", optional = true }
+async-graphql = { version = "7.0.1", optional = true }
 futures = "0.3.26"
 futures-util = "0.3.26"
 thiserror = "1.0.40"
